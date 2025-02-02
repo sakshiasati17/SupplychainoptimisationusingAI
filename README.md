@@ -1,6 +1,7 @@
 **Supply Chain Optimization Using AI**
 
 **Overview**
+
 Supply chain optimization enhances efficiency, reduces costs, and improves customer satisfaction. AI and data analytics enable smarter decision-making, predictive capabilities, and real-time process optimization. This project leverages machine learning models to analyze historical data, optimize inventory, forecast demand, and enhance distribution efficiency.
 
 **Key AI Applications**
