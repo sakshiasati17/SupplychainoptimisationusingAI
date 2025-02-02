@@ -11,15 +11,15 @@ Supply chain optimization enhances efficiency, reduces costs, and improves custo
 
 **Project Objectives**
 **1. Optimize Inventory**
-- **Method**: Use ARIMA, LSTM for precise demand forecasting.
+- **Method**: we will be using  ARIMA, LSTM for precise demand forecasting.
 - **Goal**: Maintain optimal stock levels, reducing costs and risks while improving supply chain agility.
 
 **2. Predict Demand**
-- **Method**: Apply regression and ensemble models (Random Forest, Gradient Boosting).
+- **Method**: we will be Applying regression and ensemble models (Random Forest, Gradient Boosting).
 - **Goal**: Provide adaptive demand forecasts that adjust to market trends and seasonal variations.
 
 **3. Enhance Distribution**
-- **Method**: Implement K-Means clustering, route optimization, and supplier performance analysis.
+- **Method**: we will Implement K-Means clustering, route optimization, and supplier performance analysis.
 - **Goal**: Minimize transport costs, reduce delays, and improve efficiency by streamlining delivery routes and schedules.
 
 **Dataset**
@@ -35,7 +35,7 @@ This dataset provides the necessary foundation for developing AI-driven predicti
 - **Machine Learning**: Time series forecasting, clustering, regression.
 - **Data Analytics**: Historical data analysis, segmentation, visualization.
 - **Optimization Algorithms**: Demand-supply balancing, route optimization, cost reduction.
-- **Programming**: Python (Pandas, Scikit-learn, TensorFlow, Matplotlib, etc.).
+- **Programming**: Python (Pandas, Scikit-learn, TensorFlow, Matplotlib, Seaborn, numpy etc.).
 
 **Repository Structure**
 - `data/` : Datasets for analysis and training.
