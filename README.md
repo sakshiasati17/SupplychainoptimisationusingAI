@@ -1,50 +1,141 @@
-**Supply Chain Optimization Using AI**
+# Supply Chain Optimisation using AI
 
-**Overview**
+**Demand Forecasting + Inventory Decision Simulation System**
 
-Supply chain optimization enhances efficiency, reduces costs, and improves customer satisfaction. AI and data analytics enable smarter decision-making, predictive capabilities, and real-time process optimization. This project leverages machine learning models to analyze historical data, optimize inventory, forecast demand, and enhance distribution efficiency.
+> "Built a demand forecasting and inventory simulation system that compared statistical and ML models, then optimized reorder decisions using business cost metrics."
 
-**Key AI Applications**
-- **Demand Forecasting**: Predict future demand using machine learning, minimizing stockouts and overstocking.
-- **Supplier Segmentation**: Cluster suppliers, products, and customers for tailored strategies.
-- **Cost Optimization**: Identify factors influencing transportation and supplier performance for efficiency gains.
-- **Route Optimization**: Improve logistics by finding the most cost-effective and time-efficient delivery routes.
+---
 
-**Project Objectives**
-**1. Optimize Inventory**
-- **Method**: we will be using  ARIMA, LSTM for precise demand forecasting.
-- **Goal**: Maintain optimal stock levels, reducing costs and risks while improving supply chain agility.
+## Project Overview
 
-**2. Predict Demand**
-- **Method**: we will be Applying regression and ensemble models (Random Forest, Gradient Boosting).
-- **Goal**: Provide adaptive demand forecasts that adjust to market trends and seasonal variations.
+This project goes beyond prediction into **business decisions**. It uses retail demand forecasts to simulate inventory actions and quantify stockout/overstock costs — demonstrating that ML drives operations, not just predictions.
 
-**3. Enhance Distribution**
-- **Method**: we will Implement K-Means clustering, route optimization, and supplier performance analysis.
-- **Goal**: Minimize transport costs, reduce delays, and improve efficiency by streamlining delivery routes and schedules.
+---
 
-**Dataset**
-This project utilizes the [Retail Store Inventory Forecasting Dataset](https://www.kaggle.com/datasets/anirudhchauhan/retail-store-inventory-forecasting-dataset) from Kaggle. The dataset includes:
-- **Historical Sales Data**: Records of past sales trends across multiple retail stores.
-- **Stock Levels**: Information on inventory levels to track fluctuations and optimize restocking strategies.
-- **Product Details**: Insights into different product categories, helping refine forecasting models.
-- **Store-wise Data**: Performance metrics of individual retail locations to enhance localized inventory management.
+## Project Structure
 
-This dataset provides the necessary foundation for developing AI-driven predictive models and improving supply chain decision-making.
+```
+SupplychainoptimisationusingAI/
+├── notebooks/
+│   ├── 01_Data_Exploration_and_Cleaning.ipynb         # EDA, data cleaning, visualizations
+│   ├── 02_Clustering_Feature_Engineering_ARM.ipynb    # PCA, K-Means, DBSCAN, Association Rules
+│   ├── 03_Forecasting_Models_and_Evaluation.ipynb     # ARIMA, Prophet, XGBoost, LightGBM + MAE/RMSE/MAPE
+│   └── 04_Inventory_Simulation_Business_Metrics.ipynb # SVM/RF + Inventory Simulation + Cost Analysis
+├── src/
+│   ├── data/
+│   │   └── preprocessing.py      # Data cleaning pipeline
+│   ├── features/
+│   │   └── engineering.py        # Lag, rolling, time features
+│   ├── models/
+│   │   ├── forecasting.py        # ARIMA, Prophet, XGBoost, LightGBM, LSTM
+│   │   └── evaluation.py         # MAE, RMSE, MAPE, sMAPE
+│   └── simulation/
+│       └── inventory.py          # EOQ, safety stock, reorder simulation
+├── api/
+│   └── main.py                   # FastAPI REST endpoints
+├── dashboard/
+│   └── app.py                    # Streamlit interactive dashboard
+├── data/
+│   ├── raw/                      # Original retail inventory CSV
+│   └── processed/                # Cleaned data + association rules
+├── models/                       # Saved model artifacts
+├── scripts/                      # Training and simulation scripts
+├── reports/                      # Analysis reports
+├── Dockerfile
+├── docker-compose.yml
+└── requirements.txt
+```
 
-**Technologies Used**
-- **Machine Learning**: Time series forecasting, clustering, regression.
-- **Data Analytics**: Historical data analysis, segmentation, visualization.
-- **Optimization Algorithms**: Demand-supply balancing, route optimization, cost reduction.
-- **Programming**: Python (Pandas, Scikit-learn, TensorFlow, Matplotlib, Seaborn, numpy etc.).
+---
 
-**Repository Structure**
-- `data/` : Datasets for analysis and training.
-- `notebooks/` : Jupyter notebooks for exploratory data analysis and model development.
-- `models/` : Trained AI models for forecasting and optimization.
-- `scripts/` : Python scripts for data preprocessing, feature engineering, and automation.
-- `reports/` : Documentation, insights, and results from model evaluations.
+## Notebooks
 
-**Conclusion**
-By leveraging AI in supply chain management, businesses can achieve a more agile, cost-effective, and resilient supply chain. This project demonstrates the potential of machine learning in improving inventory optimization, demand forecasting, and distribution efficiency, ultimately leading to better decision-making and operational performance.
+| # | Notebook | Content |
+|---|---|---|
+| 01 | Data Exploration & Cleaning | EDA, null handling, outlier removal, temporal analysis |
+| 02 | Clustering, Feature Engineering & ARM | PCA, K-Means, Hierarchical, DBSCAN, Association Rule Mining |
+| 03 | Forecasting Models & Evaluation | Naive, MA, ARIMA, Prophet, XGBoost, LightGBM — MAE/RMSE/MAPE/sMAPE |
+| 04 | Inventory Simulation & Business Metrics | SVM/RF, EOQ, safety stock, stockout/overstock simulation, scenario comparison |
 
+---
+
+## Models Compared
+
+| Model | Type |
+|---|---|
+| Naive Baseline | Statistical |
+| Moving Average | Statistical |
+| ARIMA / SARIMA | Time Series |
+| Prophet | Time Series |
+| XGBoost | Tabular ML |
+| LightGBM | Tabular ML |
+| LSTM | Deep Learning |
+
+---
+
+## Business Metrics
+
+| Metric | Description |
+|---|---|
+| Stockout Rate | % of days demand exceeded inventory |
+| Overstock Rate | % of days inventory > 2x demand |
+| Service Level | % of days demand fully met |
+| Holding Cost | Cost of keeping unsold inventory |
+| Lost Sales Cost | Revenue lost due to stockouts |
+| Total Operating Cost | Holding + Lost Sales |
+| EOQ | Economic Order Quantity |
+| Safety Stock | Buffer against demand variability |
+
+---
+
+## Forecast Evaluation Metrics
+
+- **MAE** — Mean Absolute Error
+- **RMSE** — Root Mean Square Error
+- **MAPE** — Mean Absolute Percentage Error
+- **sMAPE** — Symmetric MAPE
+
+---
+
+## Setup & Run
+
+### Local
+
+```bash
+pip install -r requirements.txt
+
+# Run API
+uvicorn api.main:app --reload --port 8000
+
+# Run Dashboard
+streamlit run dashboard/app.py
+```
+
+### Docker
+
+```bash
+docker-compose up --build
+```
+
+- API docs: http://localhost:8000/docs
+- Dashboard: http://localhost:8501
+
+---
+
+## Dataset
+
+- **Source**: [Retail Store Inventory Forecasting Dataset](https://www.kaggle.com/datasets/anirudhchauhan/retail-store-inventory-forecasting-dataset) (Kaggle)
+- **Size**: ~73,000 rows, 73 stores, 20 products, 4 regions
+- **Features**: Date, Store ID, Product ID, Category, Region, Inventory Level, Units Sold, Units Ordered, Price, Discount, Weather Condition, Seasonality, Competitor Pricing
+
+---
+
+## Tech Stack
+
+| Layer | Libraries |
+|---|---|
+| ML / Forecasting | pandas, numpy, scikit-learn, xgboost, lightgbm, statsmodels, prophet, pytorch |
+| API | fastapi, uvicorn, pydantic |
+| Dashboard | streamlit, plotly |
+| Database | postgresql, sqlalchemy, psycopg2 |
+| Infrastructure | docker, docker-compose |
