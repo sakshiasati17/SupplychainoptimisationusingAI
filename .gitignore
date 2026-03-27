@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Data (large files — use DVC or cloud storage)
+data/raw/*.csv
+data/processed/*.csv
+*.parquet
+
+# Models (large binaries)
+models/*.pkl
+models/*.joblib
+models/*.pt
+models/*.h5
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.dockerignore
+
+# Secrets
+*.env
+.env.*
+kaggle.json
+secrets/
+
+# Reports (generated)
+reports/*.html
+reports/*.pdf
