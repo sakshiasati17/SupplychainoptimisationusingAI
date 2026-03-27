@@ -31,6 +31,8 @@ ENV/
 # Data (large files — use DVC or cloud storage)
 data/raw/*.csv
 data/processed/*.csv
+!data/processed/cleaned_retail_data.csv
+!data/processed/feature_matrix.csv
 *.parquet
 
 # Models (large binaries)
@@ -38,6 +40,9 @@ models/*.pkl
 models/*.joblib
 models/*.pt
 models/*.h5
+!models/xgboost_demand.pkl
+!models/lightgbm_demand.pkl
+!models/feature_cols.pkl
 
 # IDE
 .idea/
