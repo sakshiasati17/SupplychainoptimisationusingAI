@@ -121,6 +121,24 @@ def train_lightgbm(X_train: pd.DataFrame, y_train: pd.Series, params: dict = Non
 # LSTM (PyTorch)
 # ---------------------------------------------------------------------------
 
+try:
+    import torch
+    import torch.nn as nn
+
+    class _LSTMNet(nn.Module):
+        def __init__(self, hidden_size: int = 64):
+            super().__init__()
+            self.lstm = nn.LSTM(1, hidden_size, batch_first=True)
+            self.fc = nn.Linear(hidden_size, 1)
+
+        def forward(self, x):
+            out, _ = self.lstm(x)
+            return self.fc(out[:, -1, :]).squeeze()
+
+except ImportError:
+    pass
+
+
 def create_sequences(data: np.ndarray, seq_len: int = 14):
     X, y = [], []
     for i in range(len(data) - seq_len):
@@ -139,7 +157,6 @@ class LSTMForecaster:
 
     def fit(self, series: pd.Series):
         import torch
-        import torch.nn as nn
         from sklearn.preprocessing import MinMaxScaler
 
         self.scaler = MinMaxScaler()
@@ -149,17 +166,7 @@ class LSTMForecaster:
         X_tensor = torch.FloatTensor(X).unsqueeze(-1)
         y_tensor = torch.FloatTensor(y)
 
-        class _LSTM(nn.Module):
-            def __init__(self, hidden_size):
-                super().__init__()
-                self.lstm = nn.LSTM(1, hidden_size, batch_first=True)
-                self.fc = nn.Linear(hidden_size, 1)
-
-            def forward(self, x):
-                out, _ = self.lstm(x)
-                return self.fc(out[:, -1, :]).squeeze()
-
-        self.model = _LSTM(self.hidden_size)
+        self.model = _LSTMNet(self.hidden_size)
         optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
         loss_fn = nn.MSELoss()
 
