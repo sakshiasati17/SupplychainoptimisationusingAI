@@ -43,6 +43,7 @@ models/*.h5
 !models/xgboost_demand.pkl
 !models/lightgbm_demand.pkl
 !models/feature_cols.pkl
+!models/lstm_demand.pkl
 
 # IDE
 .idea/
