@@ -55,6 +55,24 @@ st.markdown(f"""
     max-width: 100% !important;
 }}
 
+/* ── Force light toolbar/header bar ── */
+[data-testid="stHeader"],
+[data-testid="stToolbar"]  {{ background: {WHITE} !important; border-bottom: 1px solid {BORDER}; }}
+[data-testid="stDecoration"] {{ display: none !important; }}
+
+/* ── Force light widgets ── */
+[data-baseweb="select"] > div {{ background: {WHITE} !important; border-color: {BORDER} !important; }}
+[data-baseweb="select"] span  {{ color: {NAVY} !important; }}
+[data-baseweb="input"]        {{ background: {WHITE} !important; border-color: {BORDER} !important; }}
+[data-baseweb="input"] input  {{ color: {NAVY} !important; background: {WHITE} !important; }}
+[data-testid="stSelectbox"]   label,
+[data-testid="stNumberInput"] label {{
+    color: {SLATE} !important; font-size: 0.75rem !important; font-weight: 600 !important;
+}}
+[data-testid="stNumberInput"] button {{
+    background: {BG} !important; border-color: {BORDER} !important; color: {NAVY} !important;
+}}
+
 /* ── KPI cards ── */
 .kpi-card {{
     background: {WHITE};
@@ -552,18 +570,23 @@ with tab4:
 
     SCENARIO_COLORS = [SLATE, BLUE, AMBER, GREEN]
 
+    def hex_rgba(h, alpha):
+        h = h.lstrip("#")
+        r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+        return f"rgba({r},{g},{b},{alpha})"
+
     with cl:
         fig = go.Figure()
         fig.add_trace(go.Bar(
             name="Holding Cost", x=cmp_df.index,
             y=cmp_df["total_holding_cost_$"],
-            marker_color=[c + "CC" for c in SCENARIO_COLORS],
+            marker_color=[hex_rgba(c, 0.85) for c in SCENARIO_COLORS],
             marker_line_width=0,
         ))
         fig.add_trace(go.Bar(
             name="Lost Sales", x=cmp_df.index,
             y=cmp_df["total_lost_sales_cost_$"],
-            marker_color=[c + "55" for c in SCENARIO_COLORS],
+            marker_color=[hex_rgba(c, 0.35) for c in SCENARIO_COLORS],
             marker_line_width=0,
         ))
         fig.update_layout(**base_layout("Cost Breakdown by Scenario", 300))
