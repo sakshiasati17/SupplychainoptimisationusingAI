@@ -55,6 +55,24 @@ st.markdown(f"""
     max-width: 100% !important;
 }}
 
+/* ── Force light toolbar/header bar ── */
+[data-testid="stHeader"],
+[data-testid="stToolbar"]  {{ background: {WHITE} !important; border-bottom: 1px solid {BORDER}; }}
+[data-testid="stDecoration"] {{ display: none !important; }}
+
+/* ── Force light widgets ── */
+[data-baseweb="select"] > div {{ background: {WHITE} !important; border-color: {BORDER} !important; }}
+[data-baseweb="select"] span  {{ color: {NAVY} !important; }}
+[data-baseweb="input"]        {{ background: {WHITE} !important; border-color: {BORDER} !important; }}
+[data-baseweb="input"] input  {{ color: {NAVY} !important; background: {WHITE} !important; }}
+[data-testid="stSelectbox"]   label,
+[data-testid="stNumberInput"] label {{
+    color: {SLATE} !important; font-size: 0.75rem !important; font-weight: 600 !important;
+}}
+[data-testid="stNumberInput"] button {{
+    background: {BG} !important; border-color: {BORDER} !important; color: {NAVY} !important;
+}}
+
 /* ── KPI cards ── */
 .kpi-card {{
     background: {WHITE};
