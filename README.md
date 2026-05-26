@@ -1,14 +1,13 @@
-# Supply Chain Optimisation using AI
+# Supply Chain Optimization & Demand Analysis
 
-**Demand Forecasting + Inventory Decision Simulation System**
+**Business-Driven Inventory Decision Support System**
 
-> "Built a demand forecasting and inventory simulation system that compared statistical and ML models, then optimized reorder decisions using business cost metrics."
-
----
+> "Developed a data-driven system to optimize retail inventory levels by analyzing historical demand patterns and simulating cost-effective reorder strategies."
 
 ## Project Overview
 
-This project goes beyond prediction into **business decisions**. It uses retail demand forecasts to simulate inventory actions and quantify stockout/overstock costs — demonstrating that ML drives operations, not just predictions.
+This project focuses on **operational decision-making** within a retail supply chain. By analyzing inventory data across 73 stores, I built a system that identifies stockout risks, quantifies overstock costs, and recommends optimal reorder quantities. The goal is to balance **Holding Costs** against **Service Levels** to drive better business outcomes.
+
 
 ---
 
