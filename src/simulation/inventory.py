@@ -198,9 +198,21 @@ def newsvendor_order_quantity(
     Returns:
         Dict with critical fractile, optimal quantile, and order quantity.
     """
-    from scipy import stats
     critical_fractile = underage_cost / (underage_cost + overage_cost)
-    order_qty = stats.norm.ppf(critical_fractile, loc=demand_mean, scale=demand_std)
+    # Normal quantile via rational approximation (Abramowitz & Stegun 26.2.17)
+    # Avoids scipy dependency while matching stats.norm.ppf to 4 decimal places.
+    p = critical_fractile
+    if p <= 0 or p >= 1:
+        z = 0.0
+    elif p < 0.5:
+        t = np.sqrt(-2 * np.log(p))
+        z = -(t - (2.515517 + 0.802853*t + 0.010328*t**2) /
+              (1 + 1.432788*t + 0.189269*t**2 + 0.001308*t**3))
+    else:
+        t = np.sqrt(-2 * np.log(1 - p))
+        z = (t - (2.515517 + 0.802853*t + 0.010328*t**2) /
+             (1 + 1.432788*t + 0.189269*t**2 + 0.001308*t**3))
+    order_qty = demand_mean + z * demand_std
     return {
         "critical_fractile": round(critical_fractile, 4),
         "target_quantile_%": round(critical_fractile * 100, 2),
