@@ -175,3 +175,79 @@ def run_scenario_comparison(
         row.update(result.summary())
         rows.append(row)
     return pd.DataFrame(rows).set_index("scenario")
+
+
+def newsvendor_order_quantity(
+    demand_mean: float,
+    demand_std: float,
+    underage_cost: float,
+    overage_cost: float,
+) -> dict:
+    """
+    Newsvendor critical fractile model for a single period.
+
+    Optimal order quantity targets the q*-th quantile of demand:
+        q* = Cu / (Cu + Co)
+
+    Args:
+        demand_mean: Expected demand (units).
+        demand_std: Standard deviation of demand.
+        underage_cost: Cost per unit of unmet demand (lost margin, lost sale).
+        overage_cost: Cost per unit of excess inventory (waste, holding).
+
+    Returns:
+        Dict with critical fractile, optimal quantile, and order quantity.
+    """
+    critical_fractile = underage_cost / (underage_cost + overage_cost)
+    # Normal quantile via rational approximation (Abramowitz & Stegun 26.2.17)
+    # Avoids scipy dependency while matching stats.norm.ppf to 4 decimal places.
+    p = critical_fractile
+    if p <= 0 or p >= 1:
+        z = 0.0
+    elif p < 0.5:
+        t = np.sqrt(-2 * np.log(p))
+        z = -(t - (2.515517 + 0.802853*t + 0.010328*t**2) /
+              (1 + 1.432788*t + 0.189269*t**2 + 0.001308*t**3))
+    else:
+        t = np.sqrt(-2 * np.log(1 - p))
+        z = (t - (2.515517 + 0.802853*t + 0.010328*t**2) /
+             (1 + 1.432788*t + 0.189269*t**2 + 0.001308*t**3))
+    order_qty = demand_mean + z * demand_std
+    return {
+        "critical_fractile": round(critical_fractile, 4),
+        "target_quantile_%": round(critical_fractile * 100, 2),
+        "optimal_order_qty": round(max(order_qty, 0), 2),
+        "underage_cost": underage_cost,
+        "overage_cost": overage_cost,
+    }
+
+
+def cost_sensitivity_analysis(
+    demand_forecast: np.ndarray,
+    base_policy: InventoryPolicy,
+    param_name: str,
+    param_values: list,
+) -> pd.DataFrame:
+    """
+    Run simulation across a range of values for one policy parameter.
+    Shows how total cost and service level respond to parameter changes.
+
+    Args:
+        demand_forecast: Array of daily demand values.
+        base_policy: Baseline InventoryPolicy to vary from.
+        param_name: Name of the InventoryPolicy field to vary
+                    (e.g. 'holding_cost_per_unit', 'lead_time_days', 'order_quantity').
+        param_values: List of values to test for that parameter.
+
+    Returns:
+        DataFrame with one row per parameter value.
+    """
+    from dataclasses import replace
+    rows = []
+    for val in param_values:
+        policy = replace(base_policy, **{param_name: val})
+        result = simulate_inventory(demand_forecast, policy)
+        row = {param_name: val}
+        row.update(result.summary())
+        rows.append(row)
+    return pd.DataFrame(rows).set_index(param_name)
