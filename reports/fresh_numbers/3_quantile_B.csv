@@ -1,0 +1,4 @@
+quantile,alpha,target_coverage_%,actual_coverage_%,calibration_gap_%,pinball_loss,interval_coverage_80,mean_width
+q10,0.1,10.0,10.51,0.51,12.759,78.65,267.01
+q50,0.5,50.0,47.97,-2.03,42.9993,78.65,267.01
+q90,0.9,90.0,89.16,-0.84,22.5392,78.65,267.01
