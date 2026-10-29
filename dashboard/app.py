@@ -355,10 +355,6 @@ with tab1:
 # TAB 2 — Forecast Models
 # ════════════════════════════════════════════════════════════════════════════════
 with tab2:
-    sl_col, _ = st.columns([1, 3])
-    with sl_col:
-        horizon = st.slider("Forecast horizon (days)", 7, 90, 30)
-
     TEST    = min(30, len(ts) // 4)
     train_s = ts.iloc[:-TEST]
     test_s  = ts.iloc[-TEST:]
@@ -412,39 +408,16 @@ with tab2:
                     (feat_df["Product_ID"] == product)
                 ].sort_values("Date")
                 FCOLS = [c for c in models["features"] if c in feat_df.columns]
-                if len(feat_df) > TEST and FCOLS:
-                    xgb_pred = models["xgboost"].predict(feat_df.tail(TEST)[FCOLS])
-                    results.append(evaluate_all(actual[:len(xgb_pred)], xgb_pred, "XGBoost"))
-                    fig.add_trace(go.Scatter(
-                        x=test_s.index[:len(xgb_pred)], y=xgb_pred,
-                        name="XGBoost", line=dict(color=GREEN, width=2),
-                    ))
-                    lgb_pred = models["lightgbm"].predict(feat_df.tail(TEST)[FCOLS])
-                    results.append(evaluate_all(actual[:len(lgb_pred)], lgb_pred, "LightGBM"))
-                    fig.add_trace(go.Scatter(
-                        x=test_s.index[:len(lgb_pred)], y=lgb_pred,
-                        name="LightGBM", line=dict(color=INDIGO, width=2),
-                    ))
-        except Exception:
-            pass
-
-    # LSTM + uncertainty band
-    if "lstm" in models:
-        try:
-            lstm_pred = models["lstm"].predict(train_s, steps=TEST)
-            results.append(evaluate_all(actual[:len(lstm_pred)], lstm_pred, "LSTM"))
-            std_band  = np.std(actual[:len(lstm_pred)] - lstm_pred)
-            idx = list(test_s.index[:len(lstm_pred)])
-            fig.add_trace(go.Scatter(
-                x=idx + idx[::-1],
-                y=list(lstm_pred + std_band) + list((lstm_pred - std_band)[::-1]),
-                fill="toself", fillcolor="rgba(239,68,68,0.08)",
-                line=dict(width=0), name="LSTM ±1σ", hoverinfo="skip",
-            ))
-            fig.add_trace(go.Scatter(
-                x=test_s.index[:len(lstm_pred)], y=lstm_pred,
-                name="LSTM", line=dict(color=RED, width=2),
-            ))
+                fd = feat_df.groupby("Date")[FCOLS].mean()
+                fd = fd[fd.index.isin(test_s.index)]
+                if len(fd) and FCOLS:
+                    act = test_s.loc[fd.index].values
+                    for key, label, color in [("xgboost", "XGBoost (1-day ahead)", GREEN),
+                                              ("lightgbm", "LightGBM (1-day ahead)", INDIGO)]:
+                        pred = models[key].predict(fd[FCOLS])
+                        results.append(evaluate_all(act, pred, label))
+                        fig.add_trace(go.Scatter(x=fd.index, y=pred, name=label,
+                                                 line=dict(color=color, width=2)))
         except Exception:
             pass
 

@@ -78,6 +78,7 @@ class SimulationResult:
 def simulate_inventory(
     demand_forecast: np.ndarray,
     policy: InventoryPolicy,
+    track_pipeline: bool = True,
 ) -> SimulationResult:
     """
     Simulate day-by-day inventory under a given reorder policy.
@@ -85,6 +86,9 @@ def simulate_inventory(
     Args:
         demand_forecast: Array of daily demand values (units).
         policy: InventoryPolicy with thresholds and cost parameters.
+        track_pipeline: If True (default), reorder decisions account for inventory
+            position (on-hand plus on-order pipeline), avoiding duplicate orders
+            during lead time. If False, reorder checks on-hand inventory only.
 
     Returns:
         SimulationResult with all business metrics.
@@ -115,8 +119,11 @@ def simulate_inventory(
         result.total_holding_cost += inventory * policy.holding_cost_per_unit
         result.total_lost_sales_cost += lost_sales * policy.stockout_cost_per_unit
 
-        # Reorder decision
-        if inventory <= policy.reorder_point:
+        # Reorder decision based on inventory position (on-hand + pending orders)
+        pipeline_qty = sum(qty for (_, qty) in pending_orders) if track_pipeline else 0.0
+        inventory_position = inventory + pipeline_qty
+
+        if inventory_position <= policy.reorder_point:
             arrival_day = day + policy.lead_time_days
             pending_orders.append((arrival_day, policy.order_quantity))
             result.total_units_ordered += policy.order_quantity
